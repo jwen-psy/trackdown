@@ -119,40 +119,41 @@ get_chunk_range <- function(lines, info_patterns){
 #'   extract_chunk(text_lines, info_patterns)
 #'
 
-extract_chunk <- function(text_lines, info_patterns){
-  
+extract_chunk <- function(text_lines, info_patterns) {
   chunk_info <- get_chunk_info(lines = text_lines, info_patterns = info_patterns)
-  
-  # return NULL if no chunk was available
-  if(is.null(chunk_info)) return(NULL)
-  
+
+  # Return NULL if no chunk is available
+  if (is.null(chunk_info)) {
+    return(NULL)
+  }
+
   index_seq <- seq_len(nrow(chunk_info))
 
-  # extract chunk from starts to ends (inclusive) and keep empty lines
+  # Extract chunk from header to end (included), ensuring empty lines are preserved
   chunk_text <- vapply(index_seq, function(i) {
-    # extract the lines for the current chunk
-    lines_in_chunk <- text_lines[chunk_info$starts[i]:chunk_info$ends[i]]
+    paste(text_lines[chunk_info$starts[i]:chunk_info$ends[i]],
+      collapse = "\n"
+    ) # Preserving empty lines between chunks
+  }, FUN.VALUE = character(1))
 
-    # use paste0 to include empty strings (empty lines) in the collapse
-    paste0(lines_in_chunk, collapse = "\n")
-  }, FUN.VALUE = character(1))
-  
-  # create chunk name to use as tag in the text (solve problem of chunk with non name)
-  name_tag <- vapply(index_seq, function(i){
+  # Create chunk name to use as tag in the text (resolve problem of chunk with no name)
+  name_tag <- vapply(index_seq, function(i) {
     ifelse(is.na(chunk_info$name[i]),
-           yes = paste0("[[", "chunk-", i, "]]"),
-           no = paste0("[[", "chunk-", chunk_info$name[i], "]]"))
+      yes = paste0("[[", "chunk-", i, "]]"),
+      no = paste0("[[", "chunk-", chunk_info$name[i], "]]")
+    )
   }, FUN.VALUE = character(1))
-  
-  # swap '_' to "-" solve issues LaTeX
-  name_tag <- gsub("_", "-", name_tag)
-  
-  # add to chunk info 
+
+  # Swap '_' to "-" to solve issues with LaTeX
+  name_tag <- sub("_", "-", name_tag)
+
+  # Add to chunk info
   chunk_info$chunk_text <- chunk_text
   chunk_info$name_tag <- name_tag
 
   return(chunk_info)
 }
+
 
 #----    check_header    ----
 
@@ -552,40 +553,40 @@ restore_code <- function(document, file_name, path){
 #' restore_chunk(document, chunk_info, index_header)
 #' 
 
-restore_chunk <- function(document, chunk_info, index_header){
-  
+restore_chunk <- function(document, chunk_info, index_header) {
   index_chunks <- grep("^\\[\\[chunk-.+\\]\\]", document)
-  # extract names [[chunk-*]] removing possible spaces
-  names_chunks <- gsub("^\\s*(\\[\\[chunk-.+\\]\\])\\s*","\\1", document[index_chunks])
-  
+  # Extract names [[chunk-*]] removing possible spaces
+  names_chunks <- gsub("^\\s*(\\[\\[chunk-.+\\]\\])\\s*", "\\1", document[index_chunks])
+
   match <- chunk_info$name_tag %in% names_chunks
-  
-  
-  my_seq <- rev(seq_len(nrow(chunk_info))) # revers order start form last chunk
+
+  my_seq <- rev(seq_len(nrow(chunk_info))) # Reverse order, start from last chunk
   unmatched <- NULL
-  for (i in my_seq){
-    if(isFALSE(match[i])){
+  for (i in my_seq) {
+    if (isFALSE(match[i])) {
       unmatched <- c(chunk_info$chunk_text[i], unmatched)
-      
-      # test if is the last remaining chunk
-      if(i == 1L){
-        document <- c(document[seq_len(index_header)],  # if no header index_header is 0
-                      paste0(unmatched, collapse = "\n\n"), 
-                      document[(index_header + 1):length(document)])
+
+      # Test if it is the last remaining chunk
+      if (i == 1L) {
+        document <- c(
+          document[seq_len(index_header)], # If no header, index_header is 0
+          paste0(unmatched, collapse = "\n\n"),
+          document[(index_header + 1):length(document)]
+        )
         unmatched <- NULL
       }
-      
     } else {
-      # get correct index_chunk matching names in document
+      # Get correct index_chunk matching names in document
       line_index <- index_chunks[names_chunks == chunk_info$name_tag[i]]
-      
-      # restore chunk together with previous unmatched chunks
-      document[line_index] <- paste0(c(chunk_info$chunk_text[i], unmatched),  collapse = "\n\n")
-      unmatched <- NULL # reset
+
+      # Restore chunk together with previous unmatched chunks
+      document[line_index] <- paste0(c(chunk_info$chunk_text[i], unmatched), collapse = "\n\n")
+      unmatched <- NULL # Reset
     }
   }
-  
+
   return(document)
 }
+
 
 #----
