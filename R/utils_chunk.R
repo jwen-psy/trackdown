@@ -122,21 +122,20 @@ get_chunk_range <- function(lines, info_patterns){
 extract_chunk <- function(text_lines, info_patterns) {
   chunk_info <- get_chunk_info(lines = text_lines, info_patterns = info_patterns)
 
-  # Return NULL if no chunk is available
+  # return NULL if no chunk was available
   if (is.null(chunk_info)) {
     return(NULL)
   }
 
   index_seq <- seq_len(nrow(chunk_info))
 
-  # Extract chunk from header to end (included), ensuring empty lines are preserved
+  # Extract chunk from header to end (included) and preserve empty lines
   chunk_text <- vapply(index_seq, function(i) {
-    paste0(text_lines[chunk_info$starts[i]:chunk_info$ends[i]],
-      collapse = "\n\n"
-    ) # Preserving empty lines between chunks
+    # Combine lines but add a newline character after each line to preserve blank lines
+    paste0(text_lines[chunk_info$starts[i]:chunk_info$ends[i]], collapse = "\n")
   }, FUN.VALUE = character(1))
 
-  # Create chunk name to use as tag in the text (resolve problem of chunk with no name)
+  # Create chunk name to use as tag in the text (handle chunks with no name)
   name_tag <- vapply(index_seq, function(i) {
     ifelse(is.na(chunk_info$name[i]),
       yes = paste0("[[", "chunk-", i, "]]"),
@@ -144,16 +143,15 @@ extract_chunk <- function(text_lines, info_patterns) {
     )
   }, FUN.VALUE = character(1))
 
-  # Swap '_' to "-" to solve issues with LaTeX
+  # Swap '_' to "-" to solve LaTeX issues
   name_tag <- sub("_", "-", name_tag)
 
-  # Add to chunk info
+  # Add chunk text and name tag to the chunk_info
   chunk_info$chunk_text <- chunk_text
   chunk_info$name_tag <- name_tag
 
   return(chunk_info)
 }
-
 
 #----    check_header    ----
 
