@@ -132,7 +132,7 @@ extract_chunk <- function(text_lines, info_patterns) {
   # Extract chunk from header to end (included), ensuring empty lines are preserved
   chunk_text <- vapply(index_seq, function(i) {
     paste(text_lines[chunk_info$starts[i]:chunk_info$ends[i]],
-      collapse = "\n"
+      collapse = "\n\n"
     ) # Preserving empty lines between chunks
   }, FUN.VALUE = character(1))
 
