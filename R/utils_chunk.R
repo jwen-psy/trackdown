@@ -127,11 +127,14 @@ extract_chunk <- function(text_lines, info_patterns){
   if(is.null(chunk_info)) return(NULL)
   
   index_seq <- seq_len(nrow(chunk_info))
-  # Extract chunk from header to end (included) and keep empty lines by adding '\n' explicitly
+
+  # extract chunk from starts to ends (inclusive) and keep empty lines
   chunk_text <- vapply(index_seq, function(i) {
-    paste0(text_lines[chunk_info$starts[i]:chunk_info$ends[i]],
-      collapse = "\n"
-    ) # Ensure that lines are separated, preserving empty lines
+    # extract the lines for the current chunk
+    lines_in_chunk <- text_lines[chunk_info$starts[i]:chunk_info$ends[i]]
+
+    # use paste0 to include empty strings (empty lines) in the collapse
+    paste0(lines_in_chunk, collapse = "\n")
   }, FUN.VALUE = character(1))
   
   # create chunk name to use as tag in the text (solve problem of chunk with non name)
@@ -142,7 +145,7 @@ extract_chunk <- function(text_lines, info_patterns){
   }, FUN.VALUE = character(1))
   
   # swap '_' to "-" solve issues LaTeX
-  name_tag <- sub("_","-", name_tag)
+  name_tag <- gsub("_", "-", name_tag)
   
   # add to chunk info 
   chunk_info$chunk_text <- chunk_text
