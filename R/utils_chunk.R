@@ -568,7 +568,7 @@ restore_chunk <- function(document, chunk_info, index_header) {
       if (i == 1L) {
         document <- c(
           document[seq_len(index_header)], # If no header, index_header is 0
-          paste0(unmatched, collapse = "\n\n"),
+          paste(unmatched, collapse = "\n\n"),
           document[(index_header + 1):length(document)]
         )
         unmatched <- NULL
