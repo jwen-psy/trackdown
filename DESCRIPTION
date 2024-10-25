@@ -1,0 +1,55 @@
+Package: trackdown
+Title: Collaborative Editing of Rmd (or Quarto / Rnw) Documents in Google Drive
+Version: 1.5.1
+Authors@R:
+    c(person(given = "Emily",
+             family = "Kothe",
+             role = "aut",
+             email = "emily.kothe@deakin.edu.au",
+             comment = c(ORCID = "0000-0003-1210-0554")),
+      person(given = "Claudio",
+             family = "Zandonella Callegher",
+             role = c("aut", "cre"),
+             email = "claudiozandonella@gmail.com",
+             comment = c(ORCID = "0000-0001-7721-6318")),
+      person(given = "Filippo",
+             family = "Gambarota",
+             role = "aut",
+             email = "filippo.gambarota@gmail.com",
+             comment = c(ORCID = "0000-0002-6666-1747")),
+      person(given = "Janosch",
+             family = "Linkersdörfer",
+             role = "aut",
+             email = "jlinkersdoerfer@ucsd.edu",
+             comment = c(ORCID = "0000-0002-1577-1233")),
+      person(given = "Mathew",
+             family = "Ling",
+             role = "aut",
+             email = "m.ling@deakin.edu.au",
+             comment = c(ORCID = "0000-0002-0940-2538")))
+Description: Collaborative writing and editing of R Markdown (or Quarto / Sweave) documents. The local .Rmd (or Quarto / .Rnw) is uploaded as a plain-text file to Google Drive. By taking advantage of the easily readable Markdown (or LaTeX) syntax and the well-known online interface offered by Google Docs, collaborators can easily contribute to the writing and editing process. After integrating all authors’ contributions, the final document can be downloaded and rendered locally.
+Depends: R (>= 3.5)
+License: GPL-3
+Encoding: UTF-8
+Imports:
+    cli (>= 3.0.0),
+    gargle (>= 1.4.0),
+    googledrive (>= 2.1.0),
+    lifecycle,
+    rlang (>= 1.0.2),
+    rmarkdown
+Suggests: 
+    covr,
+    devtools,
+    httr,
+    knitr,
+    pagedown,
+    sodium,
+    testthat (>= 3.0.0),
+    vcr
+Config/testthat/edition: 3
+RoxygenNote: 7.2.3
+VignetteBuilder: knitr
+URL: https://github.com/claudiozandonella/trackdown/, https://claudiozandonella.github.io/trackdown/
+BugReports: https://github.com/claudiozandonella/trackdown/issues
+Roxygen: list(markdown = TRUE)

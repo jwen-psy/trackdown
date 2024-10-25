@@ -1,0 +1,143 @@
+http_interactions:
+- request:
+    method: patch
+    uri: https://www.googleapis.com/upload/drive/v3/files/1kIerHHdk_tFVhiBr6uFHUVus0orXAMOl?supportsAllDrives=TRUE&fields=%2A&uploadType=multipart
+    body:
+      encoding: ''
+      string: metadata=list(path = "/private/var/folders/y5/btw5zzhj5jsb6cmlv7x4_q7h0000gp/T/RtmpMIVWB3/drive-update-metaf1be12964f60.json",
+        type = "application/json; charset=UTF-8"),media=list(path = "/Users/claudio/Dottorato/Pacchetti/trackdown/tests/testthat/test_files/utils_manager/temp-output-example-2.pdf",
+        type = "application/pdf")
+    headers:
+      Accept: application/json, text/xml, application/xml, */*
+      Authorization: My bearer token is safe
+  response:
+    status:
+      status_code: 200
+      category: Success
+      reason: OK
+      message: 'Success: (200) OK'
+    headers:
+      alt-svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000,h3-Q050=":443"; ma=2592000,h3-Q046=":443";
+        ma=2592000,h3-Q043=":443"; ma=2592000,quic=":443"; ma=2592000; v="46,43"
+      cache-control: no-cache, no-store, max-age=0, must-revalidate
+      content-length: '3181'
+      content-type: application/json; charset=UTF-8
+      date: Tue, 01 Mar 2022 15:01:49 GMT
+      expires: Mon, 01 Jan 1990 00:00:00 GMT
+      pragma: no-cache
+      server: UploadServer
+      vary:
+      - Origin
+      - X-Origin
+      x-guploader-uploadid: ADPycdv-MxhBUJB4GId-hvm4v55HSD_s0tIzKwzmWk-iu6e_-CsqqBZ_YTiwgh-6AJPbXa2cBtEEnXq_Yq2D4ZsZNyQ
+    body:
+      encoding: UTF-8
+      file: no
+      string: |
+        {
+         "kind": "drive#file",
+         "id": "1kIerHHdk_tFVhiBr6uFHUVus0orXAMOl",
+         "name": "old-example-2-output",
+         "mimeType": "application/pdf",
+         "starred": false,
+         "trashed": false,
+         "explicitlyTrashed": false,
+         "parents": [
+          "1fPMaNeiJv9JumpYKl40-lfq0B9Ju_pZx"
+         ],
+         "spaces": [
+          "drive"
+         ],
+         "version": "5",
+         "webContentLink": "https://drive.google.com/uc?id=1kIerHHdk_tFVhiBr6uFHUVus0orXAMOl&export=download",
+         "webViewLink": "https://drive.google.com/file/d/1kIerHHdk_tFVhiBr6uFHUVus0orXAMOl/view?usp=drivesdk",
+         "iconLink": "https://drive-thirdparty.googleusercontent.com/16/type/application/pdf",
+         "hasThumbnail": true,
+         "thumbnailLink": "https://lh3.googleusercontent.com/ql2rWVjhld8vecMZtVRY5xvuIbplLax6Q1cck-p9_HEnkxyLe6_DMzu7YSwSkksxk1nFUj4AOGTnvik=s220",
+         "thumbnailVersion": "3",
+         "viewedByMe": true,
+         "viewedByMeTime": "2022-03-01T14:09:59.242Z",
+         "createdTime": "2022-03-01T14:09:59.242Z",
+         "modifiedTime": "2022-03-01T15:01:48.942Z",
+         "modifiedByMeTime": "2022-03-01T15:01:48.942Z",
+         "modifiedByMe": true,
+         "owners": [
+          {
+           "kind": "drive#user",
+           "displayName": "trackdown tests",
+           "photoLink": "https://lh3.googleusercontent.com/a/default-user=s64",
+           "me": true,
+           "permissionId": "07198277475976122843",
+           "emailAddress": "trackdown.tests@gmail.com"
+          }
+         ],
+         "lastModifyingUser": {
+          "kind": "drive#user",
+          "displayName": "trackdown tests",
+          "photoLink": "https://lh3.googleusercontent.com/a/default-user=s64",
+          "me": true,
+          "permissionId": "07198277475976122843",
+          "emailAddress": "trackdown.tests@gmail.com"
+         },
+         "shared": false,
+         "ownedByMe": true,
+         "capabilities": {
+          "canAcceptOwnership": false,
+          "canAddChildren": false,
+          "canAddMyDriveParent": false,
+          "canChangeCopyRequiresWriterPermission": true,
+          "canChangeSecurityUpdateEnabled": false,
+          "canChangeViewersCanCopyContent": true,
+          "canComment": true,
+          "canCopy": true,
+          "canDelete": true,
+          "canDownload": true,
+          "canEdit": true,
+          "canListChildren": false,
+          "canModifyContent": true,
+          "canMoveChildrenWithinDrive": false,
+          "canMoveItemIntoTeamDrive": true,
+          "canMoveItemOutOfDrive": true,
+          "canMoveItemWithinDrive": true,
+          "canReadRevisions": true,
+          "canRemoveChildren": false,
+          "canRemoveMyDriveParent": true,
+          "canRename": true,
+          "canShare": true,
+          "canTrash": true,
+          "canUntrash": true
+         },
+         "viewersCanCopyContent": true,
+         "copyRequiresWriterPermission": false,
+         "writersCanShare": true,
+         "permissions": [
+          {
+           "kind": "drive#permission",
+           "id": "07198277475976122843",
+           "type": "user",
+           "emailAddress": "trackdown.tests@gmail.com",
+           "role": "owner",
+           "displayName": "trackdown tests",
+           "photoLink": "https://lh3.googleusercontent.com/a/default-user=s64",
+           "deleted": false,
+           "pendingOwner": false
+          }
+         ],
+         "permissionIds": [
+          "07198277475976122843"
+         ],
+         "originalFilename": "temp-output-example-2.pdf",
+         "fullFileExtension": "pdf",
+         "fileExtension": "pdf",
+         "md5Checksum": "ca5c62eb09cf1e9889d27329d6abc405",
+         "size": "89804",
+         "quotaBytesUsed": "179608",
+         "headRevisionId": "0B_bdQMofmpmka2hVTmkwLzRXNU02TkhmcEpxOUZGdzM5YXBNPQ",
+         "isAppAuthorized": false,
+         "linkShareMetadata": {
+          "securityUpdateEligible": false,
+          "securityUpdateEnabled": true
+         }
+        }
+  recorded_at: 2022-03-01 15:01:49 GMT
+  recorded_with: vcr/1.0.2, webmockr/0.8.0

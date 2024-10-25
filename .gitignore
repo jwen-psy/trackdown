@@ -1,0 +1,25 @@
+#----    R auxiliary files    -----
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+.rmdrive
+
+#----    packgdown    ----
+pkgdown
+
+#----    mac auxiliary files    ----
+.DS_Store
+
+#----    authentication token    ----
+.secrets
+
+R/personal_utils.R
+data-raw/
+
+inst/doc
+doc
+Meta
+
+trial/
+old/

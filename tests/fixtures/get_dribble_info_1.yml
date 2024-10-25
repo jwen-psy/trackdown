@@ -1,0 +1,287 @@
+http_interactions:
+- request:
+    method: get
+    uri: https://www.googleapis.com/drive/v3/files/root?supportsAllDrives=TRUE&fields=%2A
+    body:
+      encoding: ''
+      string: ''
+    headers:
+      Accept: application/json, text/xml, application/xml, */*
+      Authorization: My bearer token is safe
+  response:
+    status:
+      status_code: 200
+      category: Success
+      reason: OK
+      message: 'Success: (200) OK'
+    headers:
+      alt-svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000,h3-Q050=":443"; ma=2592000,h3-Q046=":443";
+        ma=2592000,h3-Q043=":443"; ma=2592000,quic=":443"; ma=2592000; v="46,43"
+      cache-control: no-cache, no-store, max-age=0, must-revalidate
+      content-encoding: gzip
+      content-length: '848'
+      content-security-policy: frame-ancestors 'self'
+      content-type: application/json; charset=UTF-8
+      date: Tue, 01 Mar 2022 15:01:11 GMT
+      expires: Mon, 01 Jan 1990 00:00:00 GMT
+      pragma: no-cache
+      server: GSE
+      vary:
+      - Origin
+      - X-Origin
+      x-content-type-options: nosniff
+      x-frame-options: SAMEORIGIN
+      x-xss-protection: 1; mode=block
+    body:
+      encoding: UTF-8
+      file: no
+      string: |
+        {
+         "kind": "drive#file",
+         "id": "0APbdQMofmpmkUk9PVA",
+         "name": "My Drive",
+         "mimeType": "application/vnd.google-apps.folder",
+         "starred": false,
+         "trashed": false,
+         "explicitlyTrashed": false,
+         "spaces": [
+          "drive"
+         ],
+         "version": "1",
+         "webViewLink": "https://drive.google.com/drive/folders/0APbdQMofmpmkUk9PVA",
+         "iconLink": "https://drive-thirdparty.googleusercontent.com/16/type/application/vnd.google-apps.folder",
+         "hasThumbnail": false,
+         "thumbnailVersion": "0",
+         "viewedByMe": false,
+         "createdTime": "2022-03-01T14:07:22.507Z",
+         "modifiedTime": "2022-03-01T14:07:22.507Z",
+         "modifiedByMe": false,
+         "owners": [
+          {
+           "kind": "drive#user",
+           "displayName": "trackdown tests",
+           "photoLink": "https://lh3.googleusercontent.com/a/default-user=s64",
+           "me": true,
+           "permissionId": "07198277475976122843",
+           "emailAddress": "trackdown.tests@gmail.com"
+          }
+         ],
+         "lastModifyingUser": {
+          "kind": "drive#user",
+          "displayName": "trackdown tests",
+          "photoLink": "https://lh3.googleusercontent.com/a/default-user=s64",
+          "me": true,
+          "permissionId": "07198277475976122843",
+          "emailAddress": "trackdown.tests@gmail.com"
+         },
+         "shared": false,
+         "ownedByMe": true,
+         "capabilities": {
+          "canAcceptOwnership": false,
+          "canAddChildren": true,
+          "canAddMyDriveParent": true,
+          "canChangeCopyRequiresWriterPermission": false,
+          "canChangeSecurityUpdateEnabled": false,
+          "canChangeViewersCanCopyContent": false,
+          "canComment": true,
+          "canCopy": false,
+          "canDelete": true,
+          "canDownload": true,
+          "canEdit": true,
+          "canListChildren": true,
+          "canModifyContent": true,
+          "canMoveChildrenWithinDrive": true,
+          "canMoveItemIntoTeamDrive": true,
+          "canMoveItemOutOfDrive": true,
+          "canMoveItemWithinDrive": true,
+          "canReadRevisions": false,
+          "canRemoveChildren": true,
+          "canRemoveMyDriveParent": true,
+          "canRename": true,
+          "canShare": true,
+          "canTrash": true,
+          "canUntrash": true
+         },
+         "viewersCanCopyContent": true,
+         "copyRequiresWriterPermission": false,
+         "writersCanShare": true,
+         "permissions": [
+          {
+           "kind": "drive#permission",
+           "id": "07198277475976122843",
+           "type": "user",
+           "emailAddress": "trackdown.tests@gmail.com",
+           "role": "owner",
+           "displayName": "trackdown tests",
+           "photoLink": "https://lh3.googleusercontent.com/a/default-user=s64",
+           "deleted": false,
+           "pendingOwner": false
+          }
+         ],
+         "permissionIds": [
+          "07198277475976122843"
+         ],
+         "folderColorRgb": "#8f8f8f",
+         "quotaBytesUsed": "0",
+         "isAppAuthorized": false,
+         "linkShareMetadata": {
+          "securityUpdateEligible": false,
+          "securityUpdateEnabled": true
+         }
+        }
+  recorded_at: 2022-03-01 15:01:12 GMT
+  recorded_with: vcr/1.0.2, webmockr/0.8.0
+- request:
+    method: get
+    uri: https://www.googleapis.com/drive/v3/files?orderBy=recency%20desc&q=%28%270APbdQMofmpmkUk9PVA%27%20in%20parents%29%20and%20%28name%20%3D%20%27Hello-World%27%29%20and%20%28trashed%20%3D%20false%29&supportsAllDrives=TRUE&fields=%2A
+    body:
+      encoding: ''
+      string: ''
+    headers:
+      Accept: application/json, text/xml, application/xml, */*
+      Authorization: My bearer token is safe
+  response:
+    status:
+      status_code: 200
+      category: Success
+      reason: OK
+      message: 'Success: (200) OK'
+    headers:
+      alt-svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000,h3-Q050=":443"; ma=2592000,h3-Q046=":443";
+        ma=2592000,h3-Q043=":443"; ma=2592000,quic=":443"; ma=2592000; v="46,43"
+      cache-control: no-cache, no-store, max-age=0, must-revalidate
+      content-encoding: gzip
+      content-length: '1209'
+      content-security-policy: frame-ancestors 'self'
+      content-type: application/json; charset=UTF-8
+      date: Tue, 01 Mar 2022 15:01:12 GMT
+      expires: Mon, 01 Jan 1990 00:00:00 GMT
+      pragma: no-cache
+      server: GSE
+      vary:
+      - Origin
+      - X-Origin
+      x-content-type-options: nosniff
+      x-frame-options: SAMEORIGIN
+      x-xss-protection: 1; mode=block
+    body:
+      encoding: UTF-8
+      file: no
+      string: |
+        {
+         "kind": "drive#fileList",
+         "incompleteSearch": false,
+         "files": [
+          {
+           "kind": "drive#file",
+           "id": "10F9YaUqvGStJSExJjk2XpRXnldlkpTG1y1PWxpMYt0Y",
+           "name": "Hello-World",
+           "mimeType": "application/vnd.google-apps.document",
+           "starred": false,
+           "trashed": false,
+           "explicitlyTrashed": false,
+           "parents": [
+            "0APbdQMofmpmkUk9PVA"
+           ],
+           "spaces": [
+            "drive"
+           ],
+           "version": "6",
+           "webViewLink": "https://docs.google.com/document/d/10F9YaUqvGStJSExJjk2XpRXnldlkpTG1y1PWxpMYt0Y/edit?usp=drivesdk",
+           "iconLink": "https://drive-thirdparty.googleusercontent.com/16/type/application/vnd.google-apps.document",
+           "hasThumbnail": true,
+           "thumbnailLink": "https://docs.google.com/feeds/vt?gd=true&id=10F9YaUqvGStJSExJjk2XpRXnldlkpTG1y1PWxpMYt0Y&v=2&s=AMedNnoAAAAAYh5RWKTw4MBhupiFPqhFEzdEOj-lsTNL&sz=s220",
+           "thumbnailVersion": "2",
+           "viewedByMe": true,
+           "viewedByMeTime": "2022-03-01T14:19:35.594Z",
+           "createdTime": "2022-03-01T14:19:08.014Z",
+           "modifiedTime": "2022-03-01T14:19:35.594Z",
+           "modifiedByMeTime": "2022-03-01T14:19:35.594Z",
+           "modifiedByMe": true,
+           "owners": [
+            {
+             "kind": "drive#user",
+             "displayName": "trackdown tests",
+             "photoLink": "https://lh3.googleusercontent.com/a/default-user=s64",
+             "me": true,
+             "permissionId": "07198277475976122843",
+             "emailAddress": "trackdown.tests@gmail.com"
+            }
+           ],
+           "lastModifyingUser": {
+            "kind": "drive#user",
+            "displayName": "trackdown tests",
+            "photoLink": "https://lh3.googleusercontent.com/a/default-user=s64",
+            "me": true,
+            "permissionId": "07198277475976122843",
+            "emailAddress": "trackdown.tests@gmail.com"
+           },
+           "shared": false,
+           "ownedByMe": true,
+           "capabilities": {
+            "canAcceptOwnership": false,
+            "canAddChildren": false,
+            "canAddMyDriveParent": false,
+            "canChangeCopyRequiresWriterPermission": true,
+            "canChangeSecurityUpdateEnabled": false,
+            "canChangeViewersCanCopyContent": true,
+            "canComment": true,
+            "canCopy": true,
+            "canDelete": true,
+            "canDownload": true,
+            "canEdit": true,
+            "canListChildren": false,
+            "canModifyContent": true,
+            "canMoveChildrenWithinDrive": false,
+            "canMoveItemIntoTeamDrive": true,
+            "canMoveItemOutOfDrive": true,
+            "canMoveItemWithinDrive": true,
+            "canReadRevisions": true,
+            "canRemoveChildren": false,
+            "canRemoveMyDriveParent": true,
+            "canRename": true,
+            "canShare": true,
+            "canTrash": true,
+            "canUntrash": true
+           },
+           "viewersCanCopyContent": true,
+           "copyRequiresWriterPermission": false,
+           "writersCanShare": true,
+           "permissions": [
+            {
+             "kind": "drive#permission",
+             "id": "07198277475976122843",
+             "type": "user",
+             "emailAddress": "trackdown.tests@gmail.com",
+             "role": "owner",
+             "displayName": "trackdown tests",
+             "photoLink": "https://lh3.googleusercontent.com/a/default-user=s64",
+             "deleted": false,
+             "pendingOwner": false
+            }
+           ],
+           "permissionIds": [
+            "07198277475976122843"
+           ],
+           "size": "1024",
+           "quotaBytesUsed": "1024",
+           "isAppAuthorized": false,
+           "exportLinks": {
+            "application/rtf": "https://docs.google.com/feeds/download/documents/export/Export?id=10F9YaUqvGStJSExJjk2XpRXnldlkpTG1y1PWxpMYt0Y&exportFormat=rtf",
+            "application/vnd.oasis.opendocument.text": "https://docs.google.com/feeds/download/documents/export/Export?id=10F9YaUqvGStJSExJjk2XpRXnldlkpTG1y1PWxpMYt0Y&exportFormat=odt",
+            "text/html": "https://docs.google.com/feeds/download/documents/export/Export?id=10F9YaUqvGStJSExJjk2XpRXnldlkpTG1y1PWxpMYt0Y&exportFormat=html",
+            "application/pdf": "https://docs.google.com/feeds/download/documents/export/Export?id=10F9YaUqvGStJSExJjk2XpRXnldlkpTG1y1PWxpMYt0Y&exportFormat=pdf",
+            "application/epub+zip": "https://docs.google.com/feeds/download/documents/export/Export?id=10F9YaUqvGStJSExJjk2XpRXnldlkpTG1y1PWxpMYt0Y&exportFormat=epub",
+            "application/zip": "https://docs.google.com/feeds/download/documents/export/Export?id=10F9YaUqvGStJSExJjk2XpRXnldlkpTG1y1PWxpMYt0Y&exportFormat=zip",
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document": "https://docs.google.com/feeds/download/documents/export/Export?id=10F9YaUqvGStJSExJjk2XpRXnldlkpTG1y1PWxpMYt0Y&exportFormat=docx",
+            "text/plain": "https://docs.google.com/feeds/download/documents/export/Export?id=10F9YaUqvGStJSExJjk2XpRXnldlkpTG1y1PWxpMYt0Y&exportFormat=txt"
+           },
+           "linkShareMetadata": {
+            "securityUpdateEligible": false,
+            "securityUpdateEnabled": true
+           }
+          }
+         ]
+        }
+  recorded_at: 2022-03-01 15:01:12 GMT
+  recorded_with: vcr/1.0.2, webmockr/0.8.0
