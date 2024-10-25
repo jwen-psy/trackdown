@@ -551,53 +551,45 @@ restore_code <- function(document, file_name, path) {
 #'
 restore_chunk <- function(document, chunk_info, index_header) {
   index_chunks <- grep("^\\[\\[chunk-.+\\]\\]", document)
-  # Extract names [[chunk-*]] removing possible spaces
+  # extract names [[chunk-*]] removing possible spaces
   names_chunks <- gsub("^\\s*(\\[\\[chunk-.+\\]\\])\\s*", "\\1", document[index_chunks])
 
   match <- chunk_info$name_tag %in% names_chunks
 
-  my_seq <- rev(seq_len(nrow(chunk_info))) # Reverse order, start from last chunk
+  my_seq <- rev(seq_len(nrow(chunk_info))) # reverse order start from last chunk
   unmatched <- NULL
   for (i in my_seq) {
-    if (!match[i]) {
+    if (isFALSE(match[i])) {
       unmatched <- c(chunk_info$chunk_text[i], unmatched)
 
-      # Test if it's the last remaining chunk
+      # test if is the last remaining chunk
       if (i == 1L) {
-        # Combine unmatched chunks into a single string, separated by two newlines
-        unmatched_text <- paste0(unmatched, collapse = "\n\n")
-        # Split the text into lines
-        unmatched_lines <- unlist(strsplit(unmatched_text, "\n", fixed = TRUE))
-
+        unmatched_combined <- paste0(unmatched, collapse = "\n\n")
+        unmatched_lines <- strsplit(unmatched_combined, "\n", fixed = TRUE)[[1]]
         document <- c(
-          if (index_header > 0) document[seq_len(index_header)] else NULL, # Handle index_header = 0
+          document[seq_len(index_header)], # if no header index_header is 0
           unmatched_lines,
-          if (index_header < length(document)) document[(index_header + 1):length(document)] else NULL
+          document[(index_header + 1):length(document)]
         )
         unmatched <- NULL
       }
     } else {
-      # Get correct index_chunk matching names in document
+      # get correct index_chunk matching names in document
       line_index <- index_chunks[names_chunks == chunk_info$name_tag[i]]
 
-      # Process unmatched chunks if any
-      if (length(unmatched) > 0) {
-        # Combine unmatched chunks and current chunk text
-        chunk_text_combined <- paste0(chunk_info$chunk_text[i], "\n\n", paste0(unmatched, collapse = "\n\n"))
-      } else {
-        chunk_text_combined <- chunk_info$chunk_text[i]
-      }
+      # combine chunk_text[i] and unmatched chunks
+      combined_chunks <- paste0(c(chunk_info$chunk_text[i], unmatched), collapse = "\n\n")
+      chunk_lines <- strsplit(combined_chunks, "\n", fixed = TRUE)[[1]]
+      unmatched <- NULL # reset
 
-      # Split chunk text into lines
-      chunk_lines <- unlist(strsplit(chunk_text_combined, "\n", fixed = TRUE))
+      # remove the line at line_index and insert chunk_lines in its place
+      before <- if (line_index > 1) document[1:(line_index - 1)] else character(0)
+      after <- if (line_index < length(document)) document[(line_index + 1):length(document)] else character(0)
+      document <- c(before, chunk_lines, after)
 
-      # Remove the placeholder line
-      document <- document[-line_index]
-
-      # Insert chunk lines at the correct position
-      document <- append(document, chunk_lines, after = line_index - 1)
-
-      unmatched <- NULL # Reset
+      # adjust index_chunks for positions after line_index
+      net_change <- length(chunk_lines) - 1 # net change in length at this position
+      index_chunks <- index_chunks + ifelse(index_chunks > line_index, net_change, 0)
     }
   }
 
