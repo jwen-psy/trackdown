@@ -92,8 +92,7 @@ get_param_highlight_text <- function(text,
 #' get_patterns_highlight(extension = "rmd")
 #' 
 
-get_patterns_highlight <- function(extension){
-  
+get_patterns_highlight <- function(extension) {
   # Regex notes:
   # -  [\s\S]* all characters including new line (\s matches white spaces)
   # -  .*? non-greedy
@@ -102,8 +101,8 @@ get_patterns_highlight <- function(extension){
   # -  (?<!a)b Negative lookbehind: Matches "b" if is NOT preceded by "a"
   # -  (?=a)b Positive lookahead: Matches "b" if is followed by "a"
   # -  (?!a)b Negative lookahead: Matches "b" if is NOT followed by "a"
-  
-  if(extension %in% c("rmd", "qmd")){
+
+  if (extension %in% c("rmd", "qmd")) {
     patterns <- c(
       # Header: all lines included between "---" and "---". Must be preceded by "#----End Instructions----#"
       header = "(?<=#----End Instructions----#\n)---[\\s\\S]*?\n---",
@@ -112,7 +111,9 @@ get_patterns_highlight <- function(extension){
       # In-line Code
       inline_code = "`r [^`]+`",
       # Citations: @cit-tag or -@cit-tag but not my@email. @ not preceded by  letters, numbers or "."
-      citations = "(?<![a-zA-Z0-9.])-?@[^\\s\\]]+"
+      citations = "(?<![a-zA-Z0-9.])-?@[^\\s\\]]+",
+      # Fenced Divs: ":::" and spanning until the end of the line
+      section_start = "^:::[^\n]*"
     )
   } else {
     patterns <- c(
@@ -121,10 +122,12 @@ get_patterns_highlight <- function(extension){
       # Chunks: all lines included between "<<...>>=" and "@".
       chunks = "<<.*?>>=[\\s\\S]*?\\s*@\\s*?",
       # In-line Code
-      inline_code = "\\\\Sexpr{.+?}"
+      inline_code = "\\\\Sexpr{.+?}",
+      # Fenced Divs: ":::" and spanning until the end of the line
+      section_start = "^:::[^\n]*"
     )
   }
-  
+
   res <- c(
     # Instructions: all lines included between "#----Trackdown Instructions----#" and "#----End Instructions----#"
     instructions = "#----Trackdown Instructions----#[\\s\\S]*#----End Instructions----#",
@@ -133,10 +136,10 @@ get_patterns_highlight <- function(extension){
     # In-line Equations: $math formula$. No spaces beteween "$" and first or last part. Avoid matchin \$ in text or formula
     inline_equations = "(?<!\\\\)\\$\\S.+?\\S(?<!\\\\)\\$",
     # Equation blocks: match $$equation blocks$$. Equation blocks and "$$" should not be separated by multiple \n (only one is allowed)
-    equations =  "(?<!\\\\)\\$\\$(?!\\s*\n\\s*\n)[\\s\\S]*?(?<!\n\n)(?<!\\\\)\\$\\$",
+    equations = "(?<!\\\\)\\$\\$(?!\\s*\n\\s*\n)[\\s\\S]*?(?<!\n\n)(?<!\\\\)\\$\\$",
     patterns
   )
-  
+
   return(res)
 }
 
