@@ -551,38 +551,34 @@ restore_code <- function(document, file_name, path) {
 #'
 restore_chunk <- function(document, chunk_info, index_header) {
   index_chunks <- grep("^\\[\\[chunk-.+\\]\\]", document)
-  # Extract names [[chunk-*]], removing possible spaces
+  # extract names [[chunk-*]] removing possible spaces
   names_chunks <- gsub("^\\s*(\\[\\[chunk-.+\\]\\])\\s*", "\\1", document[index_chunks])
 
   match <- chunk_info$name_tag %in% names_chunks
 
-  my_seq <- rev(seq_len(nrow(chunk_info))) # Reverse order starting from last chunk
+  my_seq <- rev(seq_len(nrow(chunk_info))) # reverse order, starting from last chunk
   unmatched <- NULL
   for (i in my_seq) {
     if (isFALSE(match[i])) {
-      unmatched <- c(chunk_info$chunk_text[i], unmatched)
+      unmatched <- c(chunk_info$chunk_text[[i]], unmatched)
 
-      # If this is the last remaining chunk, add unmatched chunks at the header position
+      # test if it is the last remaining chunk
       if (i == 1L) {
         document <- c(
-          document[seq_len(index_header)], # If no header, index_header is 0
+          document[seq_len(index_header)], # if no header index_header is 0
           unmatched,
           document[(index_header + 1):length(document)]
         )
         unmatched <- NULL
       }
     } else {
-      # Get correct index_chunk matching names in document
+      # get the correct index_chunk by matching names in the document
       line_index <- index_chunks[names_chunks == chunk_info$name_tag[i]]
 
-      # Insert the chunk along with any unmatched chunks, preserving original line structure
-      document <- c(
-        document[1:(line_index - 1)],
-        unmatched,
-        chunk_info$chunk_text[i],
-        document[(line_index + 1):length(document)]
-      )
-      unmatched <- NULL # Reset unmatched chunks
+      # restore chunk together with any previous unmatched chunks, preserving lines
+      document <- append(document, unmatched, after = line_index - 1)
+      document[line_index] <- chunk_info$chunk_text[[i]]
+      unmatched <- NULL # reset
     }
   }
 
