@@ -550,42 +550,47 @@ restore_code <- function(document, file_name, path) {
 #' restore_chunk(document, chunk_info, index_header)
 #'
 restore_chunk <- function(document, chunk_info, index_header) {
-  index_chunks <- grep("^\\[\\[chunk-.+\\]\\]", document)
-  # Extract names [[chunk-*]], removing possible spaces
-  names_chunks <- gsub("^\\s*(\\[\\[chunk-.+\\]\\])\\s*", "\\1", document[index_chunks])
+  # Find indices of chunk placeholders in the document
+  index_chunks <- grep("^\\s*\\[\\[chunk-.+\\]\\]\\s*$", document)
 
-  match <- chunk_info$name_tag %in% names_chunks
+  # Extract chunk names from the document placeholders
+  names_chunks <- gsub("^\\s*(\\[\\[chunk-.+\\]\\])\\s*$", "\\1", document[index_chunks])
 
-  my_seq <- rev(seq_len(nrow(chunk_info))) # Reverse order starting from the last chunk
-  unmatched <- character(0)
+  # Match chunk_info names with those in the document
+  match_indices <- match(chunk_info$name_tag, names_chunks)
 
-  for (i in my_seq) {
-    chunk_lines <- strsplit(chunk_info$chunk_text[i], "\n")[[1]]
-    if (!match[i]) {
-      unmatched <- c(chunk_lines, unmatched)
+  # Initialize a list to collect unmatched chunks
+  unmatched_chunks <- list()
 
-      # Test if it is the last remaining chunk
-      if (i == 1L) {
-        document <- c(
-          document[seq_len(index_header)], # If no header, index_header is 0
-          unmatched, # Append unmatched chunks directly to preserve formatting
-          document[(index_header + 1):length(document)]
-        )
-        unmatched <- character(0)
-      }
+  # Process chunks in reverse order to avoid index shifting issues
+  for (i in rev(seq_len(nrow(chunk_info)))) {
+    chunk_name <- chunk_info$name_tag[i]
+    chunk_text <- chunk_info$chunk_text[i]
+
+    # Split chunk_text into lines to preserve empty lines
+    chunk_lines <- strsplit(chunk_text, "\n", fixed = TRUE)[[1]]
+
+    # Check if the chunk is matched in the document
+    if (is.na(match_indices[i])) {
+      # Collect unmatched chunks (at the beginning to maintain order)
+      unmatched_chunks <- c(list(chunk_lines), unmatched_chunks)
     } else {
-      # Get correct index_chunk matching names in document
-      line_index <- index_chunks[which(names_chunks == chunk_info$name_tag[i])]
+      # Get the index of the chunk placeholder in the document
+      doc_index <- index_chunks[match_indices[i]]
 
-      # Remove the placeholder line for the chunk
-      document <- c(
-        document[1:(line_index - 1)],
-        chunk_lines,
-        unmatched,
-        if (line_index + 1 <= length(document)) document[(line_index + 1):length(document)] else character(0)
-      )
-      unmatched <- character(0) # Reset
+      # Replace the placeholder with the chunk lines
+      document <- append(document[-doc_index], chunk_lines, after = doc_index - 1)
+
+      # Adjust indices for placeholders after the inserted chunk
+      adjustment <- length(chunk_lines) - 1
+      index_chunks <- index_chunks + ifelse(index_chunks > doc_index, adjustment, 0)
     }
+  }
+
+  # After processing, insert unmatched chunks after the header
+  if (length(unmatched_chunks) > 0) {
+    unmatched_lines <- unlist(unmatched_chunks, recursive = FALSE)
+    document <- append(document, unmatched_lines, after = index_header)
   }
 
   return(document)
