@@ -556,35 +556,33 @@ restore_chunk <- function(document, chunk_info, index_header) {
 
   match <- chunk_info$name_tag %in% names_chunks
 
-  my_seq <- rev(seq_len(nrow(chunk_info))) # reverse order start from last chunk
-  unmatched <- NULL
+  my_seq <- rev(seq_len(nrow(chunk_info))) # reverse order, start from last chunk
+  unmatched <- character(0)
+
   for (i in my_seq) {
     if (isFALSE(match[i])) {
+      # Add unmatched chunk text to the beginning of unmatched list to preserve order
       unmatched <- c(chunk_info$chunk_text[i], unmatched)
 
-      # test if it is the last remaining chunk
+      # Test if it's the last remaining chunk
       if (i == 1L) {
+        # Insert unmatched chunks preserving the original format without collapsing lines
         document <- c(
           document[seq_len(index_header)], # if no header, index_header is 0
-          paste0(unmatched, collapse = "\n\n"),
+          unmatched,
           document[(index_header + 1):length(document)]
         )
-        unmatched <- NULL
+        unmatched <- character(0)
       }
     } else {
-      # get correct index_chunk matching names in document
+      # Get correct index_chunk matching names in document
       line_index <- index_chunks[names_chunks == chunk_info$name_tag[i]]
 
-      # restore chunk together with previous unmatched chunks and preserve empty lines
-      document[line_index] <- paste0(c(chunk_info$chunk_text[i], unmatched), collapse = "\n\n")
-
-      # Reset unmatched for the next iteration
-      unmatched <- NULL
+      # Restore chunk with previous unmatched chunks without collapsing lines
+      document[line_index] <- c(chunk_info$chunk_text[i], unmatched)
+      unmatched <- character(0) # reset
     }
   }
-
-  # Ensure empty lines are preserved by appending them in place
-  document <- gsub("(^|\\n)(\\s*\\n)+", "\\1\n", document)
 
   return(document)
 }
