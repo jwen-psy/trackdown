@@ -550,54 +550,49 @@ restore_code <- function(document, file_name, path) {
 #' restore_chunk(document, chunk_info, index_header)
 #'
 restore_chunk <- function(document, chunk_info, index_header) {
-  # Create a mapping from name_tag to chunk_text
-  chunk_map <- setNames(chunk_info$chunk_text, chunk_info$name_tag)
+  index_chunks <- grep("^\\[\\[chunk-.+\\]\\]", document)
+  # extract names [[chunk-*]] removing possible spaces
+  names_chunks <- gsub("^\\s*(\\[\\[chunk-.+\\]\\])\\s*", "\\1", document[index_chunks])
 
-  # Identify all placeholders in the document
-  placeholder_pattern <- "^\\s*\\[\\[chunk-.+\\]\\]\\s*$"
-  placeholders <- grepl(placeholder_pattern, document)
-  placeholder_lines <- document[placeholders]
+  match <- chunk_info$name_tag %in% names_chunks
 
-  # Extract placeholder names from the document
-  placeholder_names <- gsub("^\\s*(\\[\\[chunk-.+\\]\\])\\s*$", "\\1", placeholder_lines)
+  my_seq <- rev(seq_len(nrow(chunk_info))) # reverse order start from last chunk
+  unmatched <- NULL
+  for (i in my_seq) {
+    if (isFALSE(match[i])) {
+      unmatched <- c(chunk_info$chunk_text[i], unmatched)
 
-  # Process the document line by line
-  output <- vector("list", length(document))
-  for (i in seq_along(document)) {
-    line <- document[i]
-    if (grepl(placeholder_pattern, line)) {
-      name_tag <- gsub("^\\s*(\\[\\[chunk-.+\\]\\])\\s*$", "\\1", line)
-      if (name_tag %in% names(chunk_map)) {
-        # Replace placeholder with chunk text split into lines
-        chunk_text <- chunk_map[[name_tag]]
-        chunk_lines <- strsplit(chunk_text, "\n", fixed = TRUE)[[1]]
-        output[[i]] <- chunk_lines
-      } else {
-        # Placeholder not found in chunk_map, leave it as is
-        output[[i]] <- line
+      # test if is the last remaining chunk
+      if (i == 1L) {
+        # Insert unmatched chunks after the header
+        unmatched_lines <- unlist(strsplit(unmatched, "\n"))
+        document <- c(
+          document[seq_len(index_header)], # if no header index_header is 0
+          unmatched_lines,
+          document[(index_header + 1):length(document)]
+        )
+        unmatched <- NULL
       }
     } else {
-      # Regular line, leave it as is
-      output[[i]] <- line
+      # Get correct index_chunk matching names in document
+      line_index <- index_chunks[which(names_chunks == chunk_info$name_tag[i])]
+
+      # Restore chunk together with previous unmatched chunks
+      chunk_text_full <- c(chunk_info$chunk_text[i], unmatched)
+      chunk_text_lines <- unlist(strsplit(chunk_text_full, "\n"))
+
+      # Replace the line at line_index with chunk_text_lines
+      document <- c(
+        document[1:(line_index - 1)],
+        chunk_text_lines,
+        document[(line_index + 1):length(document)]
+      )
+      unmatched <- NULL # reset
+
+      # Since the document has changed, recompute index_chunks and names_chunks
+      index_chunks <- grep("^\\[\\[chunk-.+\\]\\]", document)
+      names_chunks <- gsub("^\\s*(\\[\\[chunk-.+\\]\\])\\s*", "\\1", document[index_chunks])
     }
-  }
-  # Flatten the list to a character vector
-  document <- unlist(output)
-
-  # Handle unmatched chunks (chunks not present in the document)
-  used_tags <- intersect(chunk_info$name_tag, placeholder_names)
-  unmatched_tags <- setdiff(chunk_info$name_tag, used_tags)
-
-  if (length(unmatched_tags) > 0) {
-    unmatched_chunks <- chunk_map[unmatched_tags]
-    unmatched_combined <- paste0(unmatched_chunks, collapse = "\n\n")
-    unmatched_lines <- strsplit(unmatched_combined, "\n", fixed = TRUE)[[1]]
-    # Insert unmatched chunks after the header
-    document <- c(
-      document[seq_len(index_header)], # if no header, index_header is 0
-      unmatched_lines,
-      document[(index_header + 1):length(document)]
-    )
   }
 
   return(document)
