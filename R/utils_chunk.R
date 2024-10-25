@@ -126,7 +126,7 @@ extract_chunk <- function(text_lines, info_patterns) {
   index_seq <- seq_len(nrow(chunk_info))
   # Extract chunk from header to end (included) and add '\n' to separate lines
   chunk_text <- vapply(index_seq, function(i) {
-    paste(text_lines[chunk_info$starts[i]:chunk_info$ends[i]],
+    paste0(text_lines[chunk_info$starts[i]:chunk_info$ends[i]],
       collapse = "\n"
     )
   }, FUN.VALUE = character(1))
