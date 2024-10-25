@@ -422,7 +422,7 @@ restore_file <- function(temp_file, file_name, path, rm_gcomments = FALSE) {
   instructions <- eval_instructions(document = document, file_name = file_name)
 
   # remove instructions if indexes are available
-  if (!is.null(instructions$start) & !is.null(instructions$end)) {
+  if (!is.null(instructions$start) && !is.null(instructions$end)) {
     document <- document[-c(instructions$start:instructions$end)]
   }
 
