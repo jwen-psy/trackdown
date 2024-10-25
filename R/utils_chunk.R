@@ -551,43 +551,45 @@ restore_code <- function(document, file_name, path) {
 #'
 restore_chunk <- function(document, chunk_info, index_header) {
   index_chunks <- grep("^\\[\\[chunk-.+\\]\\]", document)
-  # extract names [[chunk-*]] removing possible spaces
+  # Extract names [[chunk-*]], removing possible spaces
   names_chunks <- gsub("^\\s*(\\[\\[chunk-.+\\]\\])\\s*", "\\1", document[index_chunks])
 
   match <- chunk_info$name_tag %in% names_chunks
 
-  my_seq <- rev(seq_len(nrow(chunk_info))) # reverse order start from last chunk
+  my_seq <- rev(seq_len(nrow(chunk_info))) # Reverse order, start from last chunk
   unmatched <- NULL
   for (i in my_seq) {
-    if (isFALSE(match[i])) {
+    if (!match[i]) {
       unmatched <- c(chunk_info$chunk_text[i], unmatched)
 
-      # test if is the last remaining chunk
+      # Test if it's the last remaining chunk
       if (i == 1L) {
         # Prepare unmatched chunk lines
         unmatched_lines <- unlist(strsplit(unmatched, "\n"))
 
         document <- c(
-          document[seq_len(index_header)], # if no header index_header is 0
+          document[seq_len(index_header)], # If no header, index_header is 0
           unmatched_lines,
           document[(index_header + 1):length(document)]
         )
         unmatched <- NULL
       }
     } else {
-      # get correct index_chunk matching names in document
+      # Get correct index_chunk matching names in document
       line_index <- index_chunks[names_chunks == chunk_info$name_tag[i]]
-
-      # Remove the placeholder line at line_index
-      document <- document[-line_index]
 
       # Prepare chunk text lines
       chunk_lines <- unlist(strsplit(c(chunk_info$chunk_text[i], unmatched), "\n"))
 
-      # Insert chunk text at the correct position
-      document <- append(document, chunk_lines, after = line_index - 1)
+      # Replace placeholder line with first line of chunk
+      document[line_index] <- chunk_lines[1]
 
-      unmatched <- NULL # reset
+      if (length(chunk_lines) > 1) {
+        # Insert remaining lines after line_index
+        document <- append(document, chunk_lines[-1], after = line_index)
+      }
+
+      unmatched <- NULL # Reset
     }
   }
 
