@@ -551,34 +551,40 @@ restore_code <- function(document, file_name, path) {
 #'
 restore_chunk <- function(document, chunk_info, index_header) {
   index_chunks <- grep("^\\[\\[chunk-.+\\]\\]", document)
-  # extract names [[chunk-*]] removing possible spaces
+  # Extract names [[chunk-*]], removing possible spaces
   names_chunks <- gsub("^\\s*(\\[\\[chunk-.+\\]\\])\\s*", "\\1", document[index_chunks])
 
   match <- chunk_info$name_tag %in% names_chunks
 
+  my_seq <- rev(seq_len(nrow(chunk_info))) # Reverse order starting from the last chunk
+  unmatched <- character(0)
 
-  my_seq <- rev(seq_len(nrow(chunk_info))) # revers order start form last chunk
-  unmatched <- NULL
   for (i in my_seq) {
-    if (isFALSE(match[i])) {
-      unmatched <- c(chunk_info$chunk_text[i], unmatched)
+    chunk_lines <- strsplit(chunk_info$chunk_text[i], "\n")[[1]]
+    if (!match[i]) {
+      unmatched <- c(chunk_lines, unmatched)
 
-      # test if is the last remaining chunk
+      # Test if it is the last remaining chunk
       if (i == 1L) {
         document <- c(
-          document[seq_len(index_header)], # if no header index_header is 0
-          unmatched,
+          document[seq_len(index_header)], # If no header, index_header is 0
+          unmatched, # Append unmatched chunks directly to preserve formatting
           document[(index_header + 1):length(document)]
         )
-        unmatched <- NULL
+        unmatched <- character(0)
       }
     } else {
-      # get correct index_chunk matching names in document
-      line_index <- index_chunks[names_chunks == chunk_info$name_tag[i]]
+      # Get correct index_chunk matching names in document
+      line_index <- index_chunks[which(names_chunks == chunk_info$name_tag[i])]
 
-      # restore chunk together with previous unmatched chunks
-      document[line_index] <- c(chunk_info$chunk_text[i], unmatched)
-      unmatched <- NULL # reset
+      # Remove the placeholder line for the chunk
+      document <- c(
+        document[1:(line_index - 1)],
+        chunk_lines,
+        unmatched,
+        if (line_index + 1 <= length(document)) document[(line_index + 1):length(document)] else character(0)
+      )
+      unmatched <- character(0) # Reset
     }
   }
 
