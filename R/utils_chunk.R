@@ -556,32 +556,35 @@ restore_chunk <- function(document, chunk_info, index_header) {
 
   match <- chunk_info$name_tag %in% names_chunks
 
-  my_seq <- rev(seq_len(nrow(chunk_info))) # reverse order start from last chunk
+  my_seq <- rev(seq_len(nrow(chunk_info))) # reverse order, starting from the last chunk
   unmatched <- NULL
   for (i in my_seq) {
     if (isFALSE(match[i])) {
-      unmatched <- c(chunk_info$chunk_text[[i]], unmatched)
+      unmatched <- c(chunk_info$chunk_text[i], unmatched)
 
-      # test if it is the last remaining chunk
+      # check if this is the last remaining chunk
       if (i == 1L) {
+        unmatched_text <- paste0(unmatched, collapse = "\n\n")
+        # add a newline before any lines starting with "## "
+        unmatched_text <- gsub("(?m)(^## )", "\n\\1", unmatched_text, perl = TRUE)
+
         document <- c(
-          document[seq_len(index_header)], # if no header index_header is 0
-          unmatched,
+          document[seq_len(index_header)], # if no header, index_header is 0
+          unmatched_text,
           document[(index_header + 1):length(document)]
         )
         unmatched <- NULL
       }
     } else {
-      # get correct index_chunk matching names in document
+      # get the correct index_chunk matching names in document
       line_index <- index_chunks[names_chunks == chunk_info$name_tag[i]]
 
-      # restore chunk by replacing the placeholder with the actual chunk lines
-      document <- c(
-        document[seq_len(line_index - 1)],
-        chunk_info$chunk_text[[i]],
-        unmatched,
-        document[(line_index + 1):length(document)]
-      )
+      # restore chunk together with previous unmatched chunks
+      chunk_text <- paste0(c(chunk_info$chunk_text[i], unmatched), collapse = "\n\n")
+      # add a newline before any lines starting with "## "
+      chunk_text <- gsub("(?m)(^## )", "\n\\1", chunk_text, perl = TRUE)
+
+      document[line_index] <- chunk_text
       unmatched <- NULL # reset
     }
   }
