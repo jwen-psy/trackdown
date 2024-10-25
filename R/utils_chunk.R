@@ -567,7 +567,7 @@ restore_chunk <- function(document, chunk_info, index_header) {
       if (i == 1L) {
         document <- c(
           document[seq_len(index_header)], # if no header index_header is 0
-          paste0(unmatched, collapse = "\n\n"),
+          unmatched,
           document[(index_header + 1):length(document)]
         )
         unmatched <- NULL
@@ -577,7 +577,7 @@ restore_chunk <- function(document, chunk_info, index_header) {
       line_index <- index_chunks[names_chunks == chunk_info$name_tag[i]]
 
       # restore chunk together with previous unmatched chunks
-      document[line_index] <- paste0(c(chunk_info$chunk_text[i], unmatched), collapse = "\n\n")
+      document <- append(document, unmatched, after = line_index - 1)
       unmatched <- NULL # reset
     }
   }
