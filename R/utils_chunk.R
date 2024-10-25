@@ -564,8 +564,10 @@ restore_chunk <- function(document, chunk_info, index_header) {
 
       # Test if it's the last remaining chunk
       if (i == 1L) {
-        # Split unmatched chunks into lines
-        unmatched_lines <- unlist(strsplit(paste0(unmatched, collapse = "\n\n"), "\n", fixed = TRUE))
+        # Combine unmatched chunks into a single string, separated by two newlines
+        unmatched_text <- paste0(unmatched, collapse = "\n\n")
+        # Split the text into lines
+        unmatched_lines <- unlist(strsplit(unmatched_text, "\n", fixed = TRUE))
 
         document <- c(
           if (index_header > 0) document[seq_len(index_header)] else NULL, # Handle index_header = 0
@@ -578,14 +580,16 @@ restore_chunk <- function(document, chunk_info, index_header) {
       # Get correct index_chunk matching names in document
       line_index <- index_chunks[names_chunks == chunk_info$name_tag[i]]
 
-      # Split chunk text into lines
-      chunk_lines <- unlist(strsplit(chunk_info$chunk_text[i], "\n", fixed = TRUE))
-
-      # If there are unmatched chunks, split and add them
+      # Process unmatched chunks if any
       if (length(unmatched) > 0) {
-        unmatched_lines <- unlist(strsplit(paste0(unmatched, collapse = "\n\n"), "\n", fixed = TRUE))
-        chunk_lines <- c(chunk_lines, unmatched_lines)
+        # Combine unmatched chunks and current chunk text
+        chunk_text_combined <- paste0(chunk_info$chunk_text[i], "\n\n", paste0(unmatched, collapse = "\n\n"))
+      } else {
+        chunk_text_combined <- chunk_info$chunk_text[i]
       }
+
+      # Split chunk text into lines
+      chunk_lines <- unlist(strsplit(chunk_text_combined, "\n", fixed = TRUE))
 
       # Remove the placeholder line
       document <- document[-line_index]
