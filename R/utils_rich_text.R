@@ -111,9 +111,7 @@ get_patterns_highlight <- function(extension) {
       # In-line Code
       inline_code = "`r [^`]+`",
       # Citations: @cit-tag or -@cit-tag but not my@email. @ not preceded by  letters, numbers or "."
-      citations = "(?<![a-zA-Z0-9.])-?@[^\\s\\]]+",
-      # Fenced Divs: ":::" and spanning until the end of the line
-      section_start = "^:::[^\n]*"
+      citations = "(?<![a-zA-Z0-9.])-?@[^\\s\\]]+"
     )
   } else {
     patterns <- c(
@@ -122,9 +120,7 @@ get_patterns_highlight <- function(extension) {
       # Chunks: all lines included between "<<...>>=" and "@".
       chunks = "<<.*?>>=[\\s\\S]*?\\s*@\\s*?",
       # In-line Code
-      inline_code = "\\\\Sexpr{.+?}",
-      # Fenced Divs: ":::" and spanning until the end of the line
-      section_start = "^:::[^\n]*"
+      inline_code = "\\\\Sexpr{.+?}"
     )
   }
 
@@ -137,6 +133,8 @@ get_patterns_highlight <- function(extension) {
     inline_equations = "(?<!\\\\)\\$\\S.+?\\S(?<!\\\\)\\$",
     # Equation blocks: match $$equation blocks$$. Equation blocks and "$$" should not be separated by multiple \n (only one is allowed)
     equations = "(?<!\\\\)\\$\\$(?!\\s*\n\\s*\n)[\\s\\S]*?(?<!\n\n)(?<!\\\\)\\$\\$",
+    # Fenced Divs: ":::" and spanning until the end of the line
+    fenced_divs = "(?<=\n):::[\\s\\S]*?(?=\n|$)",
     patterns
   )
 
